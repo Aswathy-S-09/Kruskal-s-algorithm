@@ -1,0 +1,35 @@
+def kruskal_mst(num_cities, roads):
+    # Sort edges by cost
+    roads.sort()
+
+    # Union-Find initialization
+    parent = list(range(num_cities))
+    def find(u):
+        if parent[u] != u:
+            parent[u] = find(parent[u])  # Path compression
+        return parent[u]
+
+    # Kruskal's algorithm to build MST
+    mst_cost = 0
+    mst_edges = []
+    for cost, u, v in roads:
+        root_u, root_v = find(u), find(v)
+        if root_u != root_v:  # Only add edges connecting different components
+            parent[root_v] = root_u  # Union the components
+            mst_cost += cost
+            mst_edges.append((u, v, cost))
+
+    return mst_cost, mst_edges
+
+# Example usage
+num_cities = 5
+roads = [
+    (10, 0, 1), (15, 0, 2), (5, 1, 2), (20, 1, 3), (30, 2, 3),
+    (25, 3, 4), (40, 0, 4)
+]
+
+mst_cost, mst_edges = kruskal_mst(num_cities, roads)
+print("Total MST Cost:", mst_cost)
+print("MST Edges:")
+for u, v, cost in mst_edges:
+    print(f"City {u} - City {v} with cost {cost}")
